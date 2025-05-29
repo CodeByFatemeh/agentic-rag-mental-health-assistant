@@ -1,0 +1,14 @@
+export const OK_MESSAGE = 'OK';
+export const ERROR_MESSAGE = 'ERROR';
+export const UNAUTHORIZED_MESSAGE = 'Unauthorized';
+export const PERMISSIONS_DIDNT_MATCH = "Permissions didn't match";
+export const SOMETHING_WENT_WRONG = 'Something went wrong. Please try again later.';
+export const LOADING_CHATS_MESSAGE = "Loading chats...";
+export const DELETING_CHATS_MESSAGE = "Deleting chats...";
+export const CHATS_LOADED_SUCCESS = "Successfully loaded chats";
+export const CHATS_DELETED_SUCCESS = "Deleted chats successfully";
+export const CHATS_LOADED_FAILED = "Failed to load chats";
+export const CHATS_DELETED_FAILED = "Failed to delete chats";
+export const SENDING_MESSAGE = "Sending message...";
+export const MESSAGE_SENT_SUCCESS = "Message sent successfully";
+export const MESSAGE_SENT_FAILED = "Failed to send message";

@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "title": "Coping with Anxiety",
+    "content": "Practice the 4-7-8 breathing technique: inhale for 4 seconds, hold for 7 seconds, exhale for 8 seconds to calm your nervous system.",
+    "source": "Mayo Clinic",
+    "category": "Coping Strategy",
+    "url": "https://www.mayoclinic.org/healthy-lifestyle/stress-management/in-depth/relaxation-technique/art-20045368"
+  },
+  {
+    "id": 2,
+    "title": "Understanding Depression",
+    "content": "Depression involves persistent sadness, fatigue, or loss of interest. Professional help, like therapy or medication, can be effective.",
+    "source": "National Institute of Mental Health",
+    "category": "Article",
+    "url": "https://www.nimh.nih.gov/health/topics/depression"
+  },
+  {
+    "id": 3,
+    "title": "National Suicide Prevention Lifeline",
+    "content": "Call 988 for free, confidential support 24/7 if you or someone you know is in crisis.",
+    "source": "988 Lifeline",
+    "category": "Crisis Helpline",
+    "url": "https://988lifeline.org"
+  },
+  {
+    "id": 4,
+    "title": "Mindfulness Journaling",
+    "content": "Write down three things you’re grateful for daily to focus on positive aspects of life.",
+    "source": "Psychology Today",
+    "category": "Coping Strategy",
+    "url": "https://www.psychologytoday.com/us/basics/gratitude"
+  },
+  {
+    "id": 5,
+    "title": "Crisis Text Line",
+    "content": "Text HOME to 741741 to connect with a trained crisis counselor for free, 24/7 support.",
+    "source": "Crisis Text Line",
+    "category": "Crisis Helpline",
+    "url": "https://www.crisistextline.org"
+  },
+  {
+    "id": 6,
+    "title": "Managing Stress",
+    "content": "Engage in physical activity, such as a 30-minute walk, to reduce stress hormones and improve mood.",
+    "source": "WebMD",
+    "category": "Coping Strategy",
+    "url": "https://www.webmd.com/balance/stress-management/stress-management"
+  },
+  {
+    "id": 7,
+    "title": "What is Cognitive Behavioral Therapy?",
+    "content": "Cognitive Behavioral Therapy (CBT) helps identify and change negative thought patterns to improve mental health.",
+    "source": "American Psychological Association",
+    "category": "Article",
+    "url": "https://www.apa.org/ptsd-guideline/patients-and-families/cognitive-behavioral"
+  },
+  {
+    "id": 8,
+    "title": "Grounding Techniques for Anxiety",
+    "content": "Use the 5-4-3-2-1 technique: name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste.",
+    "source": "Healthline",
+    "category": "Coping Strategy",
+    "url": "https://www.healthline.com/health/grounding-techniques"
+  },
+  {
+    "id": 9,
+    "title": "SAMHSA National Helpline",
+    "content": "Call 1-800-662-HELP (4357) for free, confidential referrals to mental health and substance use treatment.",
+    "source": "SAMHSA",
+    "category": "Crisis Helpline",
+    "url": "https://www.samhsa.gov/find-help/national-helpline"
+  },
+  {
+    "id": 10,
+    "title": "Benefits of Meditation",
+    "content": "Meditation can reduce stress and improve focus. Start with 5 minutes daily using guided apps or quiet reflection.",
+    "source": "Harvard Health",
+    "category": "Article",
+    "url": "https://www.health.harvard.edu/mind-and-mood/six-relaxation-techniques-to-reduce-stress"
+  },
+  {
+    "id": 11,
+    "title": "Progressive Muscle Relaxation",
+    "content": "Tense and release each muscle group in your body, starting from your toes, to reduce physical tension.",
+    "source": "Cleveland Clinic",
+    "category": "Coping Strategy",
+    "url": "https://my.clevelandclinic.org/health/articles/15375-progressive-muscle-relaxation"
+  },
+  {
+    "id": 12,
+    "title": "Understanding Bipolar Disorder",
+    "content": "Bipolar disorder involves mood swings from mania to depression. Treatment includes therapy and medication.",
+    "source": "Mayo Clinic",
+    "category": "Article",
+    "url": "https://www.mayoclinic.org/diseases-conditions/bipolar-disorder/symptoms-causes/syc-20355955"
+  },
+  {
+    "id": 13,
+    "title": "Trevor Project Lifeline",
+    "content": "Call 1-866-488-7386 for 24/7 crisis support for LGBTQ youth.",
+    "source": "The Trevor Project",
+    "category": "Crisis Helpline",
+    "url": "https://www.thetrevorproject.org"
+  },
+  {
+    "id": 14,
+    "title": "Guided Visualization",
+    "content": "Imagine a peaceful place, like a beach, and focus on sensory details to relax your mind.",
+    "source": "Mindful",
+    "category": "Coping Strategy",
+    "url": "https://www.mindful.org/how-to-meditate"
+  },
+  {
+    "id": 15,
+    "title": "Signs of Burnout",
+    "content": "Burnout includes exhaustion, cynicism, and reduced performance. Address it with rest and professional support.",
+    "source": "Psychology Today",
+    "category": "Article",
+    "url": "https://www.psychologytoday.com/us/basics/burnout"
+  }
+]
