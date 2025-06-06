@@ -16,7 +16,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "allowJs": true // If you need to import JavaScript files
+    "allowJs": true // To import JavaScript files
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

@@ -1,11 +1,9 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate, Outlet } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
-const ProtectedRoute = ({ requiresAuth, component: Component,
-//   ...rest
- }) => {
-    const { isLoggedIn, user, loading } = useAuth();
+import { useAuth } from '../hooks/useAuth';
+const ProtectedRoute = () => {
+    const { isLoggedIn, loading } = useAuth();
     if (loading) {
         return (_jsx(Box, { sx: {
                 display: 'flex',
@@ -14,10 +12,6 @@ const ProtectedRoute = ({ requiresAuth, component: Component,
                 height: '100vh',
             }, children: _jsx(CircularProgress, {}) })); // Display loading indicator
     }
-    if (requiresAuth && !isLoggedIn && !user) {
-        console.log("ProtectedRoute", requiresAuth, isLoggedIn, user);
-        return _jsx(Navigate, { to: '/login', replace: true });
-    }
-    return _jsx(Component, {});
+    return isLoggedIn ? _jsx(Outlet, {}) : _jsx(Navigate, { to: "/login", replace: true });
 };
 export default ProtectedRoute;

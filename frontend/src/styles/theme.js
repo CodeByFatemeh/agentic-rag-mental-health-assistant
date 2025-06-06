@@ -1,6 +1,6 @@
 import { createTheme, alpha } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
-// Color tokens (centralized and reusable)
+// Color tokens
 const colorTokens = {
     white: '#FFFFFF',
     black: '#000000',
@@ -90,7 +90,7 @@ export const getDesignTokens = (mode) => {
                         color: isLight ? colorTokens.white : colorTokens.black
                     }
                 },
-                // 👇 ADD this empty array to satisfy TypeScript
+                // To satisfy TypeScript
                 variants: []
             }
         }

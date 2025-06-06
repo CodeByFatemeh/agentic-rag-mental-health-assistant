@@ -1,23 +1,52 @@
-import { Router } from 'express'
-import { verifyToken } from '../utils/auth.js'
-import { chatCompletionValidator, validate } from '../utils/validators.js'
+import { Router } from 'express';
+import { verifyToken } from '../middleware/auth.js';
+import { chatCompletionValidator, validate } from '../utils/validators.js';
 import {
   deleteChats,
+  generateChatCompletion,
   generateChatCompletionRAG,
-  sendChatsToUser
-} from '../controllers/chatController.js'
+  sendChatsToUser,
+  getChatSessions
+} from '../controllers/chatController.js';
 
-//Protected API
-const chatRoutes = Router()
+/**
+ * @swagger
+ * /api/v1/chat/new:
+ *   post:
+ *     summary: Generate RAG-based chat completion
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message: { type: string }
+ *               sessionId: { type: string }
+ *     responses:
+ *       200: { description: Successful response }
+ */
+const chatRoutes = Router();
+
 chatRoutes.post(
   '/new',
   validate(chatCompletionValidator),
   verifyToken,
   generateChatCompletionRAG
-)
+);
 
-chatRoutes.get('/all-chats', verifyToken, sendChatsToUser)
+chatRoutes.post(
+  '/non-rag',
+  validate(chatCompletionValidator),
+  verifyToken,
+  generateChatCompletion
+);
 
-chatRoutes.delete('/delete', verifyToken, deleteChats)
+chatRoutes.get('/all-chats', verifyToken, sendChatsToUser);
 
-export default chatRoutes
+chatRoutes.delete('/delete', verifyToken, deleteChats);
+
+chatRoutes.get('/sessions', verifyToken, getChatSessions);
+
+export default chatRoutes;

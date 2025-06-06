@@ -1,16 +1,23 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import { createContext, useState, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { createTheme } from '@mui/material/styles';
-import { getDesignTokens } from '../styles/theme'; // Adjust the path
+import { getDesignTokens } from '../styles/theme';
 const ThemeContext = createContext(undefined);
+/**
+ * Provides MUI theme context + light/dark mode support.
+ */
 export const ThemeProvider = ({ children }) => {
     const [mode, setMode] = useState('light');
     const toggleTheme = () => {
-        setMode((prevMode) => prevMode === 'light' ? 'dark' : 'light');
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     };
-    const themeMemo = useMemo(() => createTheme(getDesignTokens(mode)), [mode]); // Directly use getDesignTokens
-    return (_jsx(ThemeContext.Provider, { value: { theme: themeMemo, toggleTheme, mode }, children: children }));
+    const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+    const value = useMemo(() => ({ theme, mode, toggleTheme }), [theme, mode]);
+    return _jsx(ThemeContext.Provider, { value: value, children: children });
 };
+/**
+ * Hook to access theme context.
+ */
 export const useThemeContext = () => {
     const context = useContext(ThemeContext);
     if (!context) {

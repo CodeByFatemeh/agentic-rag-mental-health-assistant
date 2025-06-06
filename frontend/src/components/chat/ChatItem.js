@@ -5,13 +5,12 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-// import OpenAIIcon from '../../../public/img/chatbot.webp'
-function extractCodeFromString(message) {
-    if (message.includes('```')) {
-        return message.split('```');
+function extractCodeFromString(content) {
+    if (content.includes('```')) {
+        return content.split('```');
     }
     return undefined;
 }
@@ -25,25 +24,24 @@ function isCodeBlock(str) {
         str.includes('#') ||
         str.includes('//'));
 }
-const ChatItem = ({ content, role, id }) => {
-    var _a, _b, _c;
+export const ChatItem = ({ message }) => {
+    var _a;
+    const { content, role, _id: id } = message;
     const [copied, setCopied] = useState(false);
     const messageBlocks = extractCodeFromString(content);
-    const auth = useAuth();
+    const { user } = useAuth();
     const theme = useTheme();
     const handleCopyCode = (code) => {
         navigator.clipboard.writeText(code);
         setCopied(true);
         toast.success('Code copied to clipboard!');
-        setTimeout(() => {
-            setCopied(false);
-        }, 2000);
+        setTimeout(() => setCopied(false), 2000);
     };
     const renderContent = () => {
         if (!messageBlocks) {
-            const bulletRegex = /^[-*\u2022]\s+(.+)$/; // Regex for -, *, and •
-            const numberedRegex = /^\d+\.\s+(.+)$/; // Regex for numbered lists
-            return (_jsx(Typography, { sx: { fontSize: '20px' }, children: content.split('\n').map((line, index) => {
+            const bulletRegex = /^[-*\u2022]\s+(.+)$/;
+            const numberedRegex = /^\d+\.\s+(.+)$/;
+            return (_jsx(Typography, { sx: { fontSize: 'clamp(0.875rem, 2vw, 1rem)' }, children: content.split('\n').map((line, index) => {
                     const bulletMatch = bulletRegex.exec(line);
                     const numberedMatch = numberedRegex.exec(line);
                     if (bulletMatch) {
@@ -61,12 +59,19 @@ const ChatItem = ({ content, role, id }) => {
             if (isCodeBlock(block)) {
                 const language = block.split('\n')[0].trim();
                 const code = block.substring(language.length).trim();
-                return (_jsxs(Box, { sx: { position: 'relative' }, children: [_jsx(SyntaxHighlighter, { style: coldarkDark, language: language || 'javascript', children: code }), _jsx(IconButton, { onClick: () => handleCopyCode(code), sx: { position: 'absolute', top: 0, right: 0, color: 'white' }, children: copied ? _jsx(CheckIcon, {}) : _jsx(FileCopyIcon, {}) })] }, `${id}-${index}`));
+                return (_jsxs(Box, { sx: { position: 'relative', my: 1 }, children: [_jsx(SyntaxHighlighter, { style: coldarkDark, language: language || 'javascript', customStyle: { fontSize: 'clamp(0.75rem, 1.8vw, 0.875rem)', borderRadius: 4 }, children: code }), _jsx(IconButton, { onClick: () => handleCopyCode(code), sx: {
+                                position: 'absolute',
+                                top: 4,
+                                right: 4,
+                                color: theme.palette.text.secondary,
+                                bgcolor: theme.palette.background.paper,
+                                '&:hover': { bgcolor: theme.palette.grey[100] },
+                            }, children: copied ? _jsx(CheckIcon, { fontSize: "small" }) : _jsx(FileCopyIcon, { fontSize: "small" }) })] }, `${id}-${index}`));
             }
             else {
-                const bulletRegex = /^[-*\u2022]\s+(.+)$/; // Regex for -, *, and •
-                const numberedRegex = /^\d+\.\s+(.+)$/; // Regex for numbered lists
-                return (_jsx(Typography, { sx: { fontSize: '20px' }, children: block.split('\n').map((line, idx) => {
+                const bulletRegex = /^[-*\u2022]\s+(.+)$/;
+                const numberedRegex = /^\d+\.\s+(.+)$/;
+                return (_jsx(Typography, { sx: { fontSize: 'clamp(0.875rem, 2vw, 1rem)' }, children: block.split('\n').map((line, idx) => {
                         const bulletMatch = bulletRegex.exec(line);
                         const numberedMatch = numberedRegex.exec(line);
                         if (bulletMatch) {
@@ -82,21 +87,18 @@ const ChatItem = ({ content, role, id }) => {
             }
         });
     };
-    return role == 'assistant' ? (_jsxs(Box, { sx: {
+    return (_jsxs(Box, { sx: {
             display: 'flex',
-            p: 2,
-            bgcolor: 'Background.paper',
-            gap: 2,
+            p: { xs: 1, sm: 1.5 },
+            bgcolor: role === 'user' ? '#e3f2fd' : '#f5f5f5',
             borderRadius: 2,
-            my: 1
-        }, children: [_jsx(Avatar, { sx: { ml: '0' }, children: _jsx(AutoAwesomeOutlinedIcon, {}) }), _jsx(Box, { children: renderContent() })] })) : (_jsxs(Box, { sx: {
-            display: 'flex',
-            p: 2,
-            bgcolor: theme.palette.chatInput.main,
-            gap: 2,
-            borderRadius: 2
-        }, children: [_jsxs(Avatar, { sx: { ml: '0' }, children: [(_a = auth === null || auth === void 0 ? void 0 : auth.user) === null || _a === void 0 ? void 0 : _a.name[0], ((_b = auth === null || auth === void 0 ? void 0 : auth.user) === null || _b === void 0 ? void 0 : _b.name.split(' ')[1])
-                        ? (_c = auth === null || auth === void 0 ? void 0 : auth.user) === null || _c === void 0 ? void 0 : _c.name.split(' ')[1][0]
-                        : ''] }), _jsx(Box, { children: renderContent() })] }));
+            my: 1,
+            gap: 1,
+            maxWidth: '80%',
+            alignSelf: role === 'user' ? 'flex-end' : 'flex-start',
+        }, children: [_jsx(Avatar, { sx: {
+                    width: 32,
+                    height: 32,
+                    bgcolor: role === 'user' ? theme.palette.primary.main : theme.palette.secondary.main,
+                }, children: role === 'user' && (user === null || user === void 0 ? void 0 : user.name) ? (`${user.name[0]}${((_a = user.name.split(' ')[1]) === null || _a === void 0 ? void 0 : _a[0]) || ''}`) : (_jsx(AutoAwesomeOutlinedIcon, { fontSize: "small" })) }), _jsx(Box, { sx: { flexGrow: 1, wordBreak: 'break-word' }, children: renderContent() })] }));
 };
-export default ChatItem;

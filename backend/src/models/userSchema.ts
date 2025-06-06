@@ -1,27 +1,19 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Model } from 'mongoose';
+import { IUser } from '../types/index.js';
 
-export interface UserDocument extends Document {
-  name: string
-  email: string
-  password: string
-  chats: mongoose.Types.ObjectId[]
-  createdAt: Date
-  updatedAt: Date
-}
-
-// Define the Mongoose schema
-const userSchema = new Schema<UserDocument>(
+const userSchema: Schema<IUser> = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, index: true },
     password: { type: String, required: true },
-    chats: [{ type: Schema.Types.ObjectId, ref: 'Chat' }],
+    chats: [{ type: Schema.Types.ObjectId, ref: 'Chat', default: [] }],
   },
   {
     timestamps: true,
-    versionKey: false // Hide __v
+    versionKey: false,
   }
-)
+);
 
-const User: Model<UserDocument> = mongoose.model<UserDocument>('User', userSchema)
-export default User
+const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
+export default User;
+export { userSchema };

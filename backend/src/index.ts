@@ -1,56 +1,56 @@
 import app from './app.js'
-import { connectToDB } from './db/connection.js'
-import { Server } from 'http';
+import { connectToDB } from './config/db.js'
+import { Server } from 'http'
 
 declare global {
-  let serverInstance: any;
+  let serverInstance: any
 }
 
 // Start server after connecting to database
 const PORT = process.env.PORT ?? 3001
 let server: Server
 
-async function startServer() {
+async function startServer () {
   try {
-    await connectToDB();
+    await connectToDB()
     server = app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+      console.log(`Server is running on port ${PORT}`)
+    })
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('Failed to start server:', error)
     if (server) {
       server.close(() => {
-        console.log('Server closed due to database error');
-      });
+        console.log('Server closed due to database error')
+      })
     }
-    process.exit(1); // Exit with a non-zero code to indicate an error
+    process.exit(1)
   }
 }
 
-startServer();
+startServer()
 
-async function gracefulShutdown(signal: string) {
-  console.log(`Received ${signal}. Closing server...`);
+async function gracefulShutdown (signal: string) {
+  console.log(`Received ${signal}. Closing server...`)
   if (server) {
     server.close(() => {
-      console.log('Server closed gracefully.');
-      process.exit(0);
-    });
+      console.log('Server closed gracefully.')
+      process.exit(0)
+    })
   } else {
-    process.exit(0); // If server wasn't started, exit it gracefully.
+    process.exit(0) // If server wasn't started, exit it gracefully.
   }
 }
 
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
 
 // Handle unhandled promise rejections.
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+})
 
 // Handle uncaught exceptions.
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-  process.exit(1); 
-});
+process.on('uncaughtException', error => {
+  console.error('Uncaught Exception:', error)
+  process.exit(1)
+})

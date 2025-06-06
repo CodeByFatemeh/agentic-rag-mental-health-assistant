@@ -1,23 +1,20 @@
-import { Box, Typography, useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material';
 
-const Footer = () => {
-  const theme = useTheme()
-  const linkColor = theme.palette.primary.main
-
+/**
+ * Footer for the app.
+ */
+const Footer: React.FC = () => {
+    const theme = useTheme()
+    const linkColor = theme.palette.primary.main
+  
   return (
-    <Box
-      component='footer'
-      sx={{
-        py: 3,
-        px: 2,
-        mt: 'auto',
-      }}
-    >
-      <Typography variant='body2' align='center' color='softGray.main'>
-        © {new Date().getFullYear()}{' '}
+    <Box sx={{ py: 3, textAlign: 'center', mt: 'auto' }}>
+      <Typography variant="body2" color='softGray.main'>
+        &copy; {new Date().getFullYear()}
+        {' '}
         <span style={{ fontWeight: 600 }}>MindEase</span> by{' '}
         <a
-          href='https://www.linkedin.com/in/fatemeh-frontend-dev'
+          href='https://www.linkedin.com/in/fatemeh-web-dev'
           color={linkColor}
           // underline="hover"
           target='_blank'
@@ -26,10 +23,9 @@ const Footer = () => {
         >
           Fatemeh Telgerdi
         </a>
-        {/* Generative AI Chatbot */}
       </Typography>
     </Box>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

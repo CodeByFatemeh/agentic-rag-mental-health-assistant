@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -9,121 +9,141 @@ import {
   Button,
   useMediaQuery,
   useTheme,
-  styled
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import Logo from './shared/Logo'
-import { useAuth } from '../context/AuthContext'
-import Brightness4Icon from '@mui/icons-material/Brightness4'
-import Brightness7Icon from '@mui/icons-material/Brightness7'
-import { useThemeContext } from '../context/ThemeContext'
+  styled,
+  Box,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import Logo from './shared/Logo';
+import { useAuth } from '../hooks/useAuth';
+import { useThemeContext } from '../context/ThemeContext';
+import React from 'react';
+
+interface AuthContext {
+  isLoggedIn: boolean;
+  logout: () => Promise<void>;
+}
 
 const StyledButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
   margin: theme.spacing(1),
   '&:hover': {
     backgroundColor: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)',
-  }
-}))
+  },
+}));
 
-const Header = () => {
-  const auth = useAuth()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-  const navigate = useNavigate()
-  const theme = useTheme()
-  const { mode, toggleTheme } = useThemeContext()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+/**
+ * Navigation header for the app.
+ */
+const Header: React.FC = () => {
+  const auth = useAuth() as AuthContext;
+  const { mode, toggleTheme } = useThemeContext();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+  const handleMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
+  const handleMenuClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
 
-  const handleLogout = async () => {
-    handleMenuClose()
-    await auth.logout()
-    navigate('/login')
-  }
+  const handleLogout = useCallback(async () => {
+    handleMenuClose();
+    try {
+      await auth.logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }, [auth, navigate, handleMenuClose]);
 
-  const handleLogin = () => {
-    handleMenuClose()
-    navigate('/login')
-  }
+  const handleLogin = useCallback(() => {
+    handleMenuClose();
+    navigate('/login');
+  }, [navigate, handleMenuClose]);
 
-  const handleSignup = () => {
-    handleMenuClose()
-    navigate('/signup')
-  }
+  const handleSignup = useCallback(() => {
+    handleMenuClose();
+    navigate('/signup');
+  }, [navigate, handleMenuClose]);
 
-  const handleChat = () => {
-    handleMenuClose()
-    navigate('/chat')
-  }
+  const handleChat = useCallback(() => {
+    handleMenuClose();
+    navigate('/chat');
+  }, [navigate, handleMenuClose]);
 
   return (
-    <AppBar
-      sx={{ bgcolor: 'inherit', position: 'static' }}
-    >
+    <AppBar sx={{ bgcolor: 'inherit', position: 'static' }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {isMobile && (
-            <IconButton onClick={handleMenuOpen} aria-label='open menu'>
+            <IconButton onClick={handleMenuOpen} aria-label="Open menu">
               <MenuIcon />
             </IconButton>
           )}
-          <Logo />
-        </div>
+          <Logo aria-label="MindEase Home" />
+        </Box>
 
         {!isMobile && (
-          <div>
+          <Box>
             {auth.isLoggedIn ? (
-              <div>
-                <StyledButton onClick={handleChat}>Chat</StyledButton>
-                <StyledButton onClick={handleLogout}>Logout</StyledButton>
-                <IconButton onClick={toggleTheme}>
+              <>
+                <StyledButton onClick={handleChat} aria-label="Go to chat">
+                  Chat
+                </StyledButton>
+                <StyledButton onClick={handleLogout} aria-label="Logout">
+                  Logout
+                </StyledButton>
+                <IconButton onClick={toggleTheme} aria-label={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}>
                   {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                 </IconButton>
-              </div>
+              </>
             ) : (
-              <div>
-                <StyledButton onClick={handleLogin}>Login</StyledButton>
-                <StyledButton onClick={handleSignup}>Sign Up</StyledButton>
-                <IconButton onClick={toggleTheme}>
+              <>
+                <StyledButton onClick={handleLogin} aria-label="Login">
+                  Login
+                </StyledButton>
+                <StyledButton onClick={handleSignup} aria-label="Sign up">
+                  Sign Up
+                </StyledButton>
+                <IconButton onClick={toggleTheme} aria-label={`Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`}>
                   {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                 </IconButton>
-              </div>
+              </>
             )}
-          </div>
+          </Box>
         )}
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
           {auth.isLoggedIn ? (
-            <div>
-              <MenuItem sx={{ width: '100%' }} onClick={handleChat}>
+            <>
+              <MenuItem onClick={handleChat} aria-label="Go to chat">
                 Chat
               </MenuItem>
-              <MenuItem sx={{ width: '100%' }} onClick={handleLogout}>
+              <MenuItem onClick={handleLogout} aria-label="Logout">
                 Logout
               </MenuItem>
-            </div>
+            </>
           ) : (
-            <div>
-              <MenuItem sx={{ width: '100%' }} onClick={handleLogin}>
+            <>
+              <MenuItem onClick={handleLogin} aria-label="Login">
                 Login
               </MenuItem>
-              <MenuItem sx={{ width: '100%' }} onClick={handleSignup}>
+              <MenuItem onClick={handleSignup} aria-label="Sign up">
                 Sign Up
               </MenuItem>
-            </div>
+            </>
           )}
         </Menu>
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Header
+export default React.memo(Header);

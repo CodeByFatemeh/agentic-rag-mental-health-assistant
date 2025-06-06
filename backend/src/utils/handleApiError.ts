@@ -27,7 +27,7 @@ export const handleApiError = (
     message = error.message;
   }
 
-  console.error(`API Error in ${operation}: ${message}`, error); // Add logging
+  console.error(`API Error in ${operation}: ${message}`, error);
 
   return { message, statusCode, errorObject };
 };

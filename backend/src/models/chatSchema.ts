@@ -1,18 +1,7 @@
-// Create a schema for conversation history
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
+import { IChat } from '../types/index.js';
 
-export interface ChatDocument extends Document {
-  user: mongoose.Types.ObjectId;
-  sessionId?: string; // Optional session ID to group conversations
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  metadata?: Record<string, any>;
-  createdAt: Date;
-  updatedAt: Date;
-  isDeleted?: boolean;
-}
-
-const chatSchema: Schema<ChatDocument> = new Schema(
+const chatSchema: Schema<IChat> = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -52,8 +41,7 @@ const chatSchema: Schema<ChatDocument> = new Schema(
   }
 );
 
-// Compound index for efficient user + session + createdAt queries
 chatSchema.index({ user: 1, sessionId: 1, createdAt: -1 });
 
-const Chat: Model<ChatDocument> = mongoose.model<ChatDocument>('Chat', chatSchema);
+const Chat: Model<IChat> = mongoose.model<IChat>('Chat', chatSchema);
 export default Chat;

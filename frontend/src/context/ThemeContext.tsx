@@ -1,34 +1,38 @@
-import { createContext, useState, useContext, useMemo } from 'react';
-import { Theme, PaletteMode, createTheme } from '@mui/material/styles';
-import { getDesignTokens } from '../styles/theme'; // Adjust the path
+import { createContext, useContext, useMemo, useState } from 'react';
+import { createTheme, Theme, PaletteMode } from '@mui/material/styles';
+import { getDesignTokens } from '../styles/theme';
 
+// Define context interface
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme: () => void;
   mode: PaletteMode;
+  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+/**
+ * Provides MUI theme context + light/dark mode support.
+ */
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mode, setMode] = useState<PaletteMode>('light');
 
   const toggleTheme = () => {
-    setMode((prevMode: PaletteMode) =>
-      prevMode === 'light' ? 'dark' : 'light'
-    );
+    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
 
-  const themeMemo = useMemo(() => createTheme(getDesignTokens(mode)), [mode]); // Directly use getDesignTokens
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
-  return (
-    <ThemeContext.Provider value={{ theme: themeMemo, toggleTheme, mode }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+
+  const value = useMemo(() => ({ theme, mode, toggleTheme }), [theme, mode]);
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
-export const useThemeContext = () => {
+/**
+ * Hook to access theme context.
+ */
+export const useThemeContext = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error('useThemeContext must be used within a ThemeProvider');

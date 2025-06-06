@@ -1,22 +1,22 @@
-import { useState } from 'react'
-import { Box, Avatar, Typography, IconButton, useTheme } from '@mui/material'
-import FileCopyIcon from '@mui/icons-material/FileCopy'
-import CheckIcon from '@mui/icons-material/Check'
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined'
-import toast from 'react-hot-toast'
-import { useAuth } from '../../context/AuthContext'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-// import OpenAIIcon from '../../../public/img/chatbot.webp'
+import { useState } from 'react';
+import { Box, Avatar, Typography, IconButton, useTheme } from '@mui/material';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import CheckIcon from '@mui/icons-material/Check';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import toast from 'react-hot-toast';
+import { useAuth } from '../../hooks/useAuth';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { ChatMessage } from '../../types';
 
-function extractCodeFromString (message: string) {
-  if (message.includes('```')) {
-    return message.split('```')
+function extractCodeFromString(content: string): string[] | undefined {
+  if (content.includes('```')) {
+    return content.split('```');
   }
-  return undefined
+  return undefined;
 }
 
-function isCodeBlock (str: string) {
+function isCodeBlock(str: string): boolean {
   return (
     str.includes('=') ||
     str.includes(';') ||
@@ -26,42 +26,37 @@ function isCodeBlock (str: string) {
     str.includes('}') ||
     str.includes('#') ||
     str.includes('//')
-  )
+  );
 }
 
-const ChatItem = ({
-  content,
-  role,
-  id
-}: {
-  content: string
-  role: 'user' | 'assistant' | 'system'
-  id: string
-}) => {
-  const [copied, setCopied] = useState(false)
-  const messageBlocks = extractCodeFromString(content)
-  const auth = useAuth()
-  const theme = useTheme()
+interface ChatItemProps {
+  message: ChatMessage;
+}
+
+export const ChatItem: React.FC<ChatItemProps> = ({ message }) => {
+  const { content, role, _id: id } = message;
+  const [copied, setCopied] = useState(false);
+  const messageBlocks = extractCodeFromString(content);
+  const { user } = useAuth();
+  const theme = useTheme();
 
   const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code)
-    setCopied(true)
-    toast.success('Code copied to clipboard!')
-    setTimeout(() => {
-      setCopied(false)
-    }, 2000)
-  }
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    toast.success('Code copied to clipboard!');
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const renderContent = () => {
     if (!messageBlocks) {
-      const bulletRegex = /^[-*\u2022]\s+(.+)$/ // Regex for -, *, and •
-      const numberedRegex = /^\d+\.\s+(.+)$/ // Regex for numbered lists
+      const bulletRegex = /^[-*\u2022]\s+(.+)$/;
+      const numberedRegex = /^\d+\.\s+(.+)$/;
 
       return (
-        <Typography sx={{ fontSize: '20px' }}>
+        <Typography sx={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}>
           {content.split('\n').map((line, index) => {
-            const bulletMatch = bulletRegex.exec(line)
-            const numberedMatch = numberedRegex.exec(line)
+            const bulletMatch = bulletRegex.exec(line);
+            const numberedMatch = numberedRegex.exec(line);
 
             if (bulletMatch) {
               return (
@@ -69,122 +64,122 @@ const ChatItem = ({
                   • {bulletMatch[1]}
                   <br />
                 </span>
-              )
+              );
             } else if (numberedMatch) {
               return (
                 <span key={`${id}-${index}`}>
                   {index + 1}. {numberedMatch[1]}
                   <br />
                 </span>
-              )
+              );
             } else {
               return (
                 <span key={`${id}-${index}`}>
                   {line}
                   <br />
                 </span>
-              )
+              );
             }
           })}
         </Typography>
-      )
+      );
     }
 
     return messageBlocks.map((block, index) => {
       if (isCodeBlock(block)) {
-        const language = block.split('\n')[0].trim()
-        const code = block.substring(language.length).trim()
+        const language = block.split('\n')[0].trim();
+        const code = block.substring(language.length).trim();
 
         return (
-          <Box key={`${id}-${index}`} sx={{ position: 'relative' }}>
+          <Box key={`${id}-${index}`} sx={{ position: 'relative', my: 1 }}>
             <SyntaxHighlighter
               style={coldarkDark}
               language={language || 'javascript'}
+              customStyle={{ fontSize: 'clamp(0.75rem, 1.8vw, 0.875rem)', borderRadius: 4 }}
             >
               {code}
             </SyntaxHighlighter>
             <IconButton
               onClick={() => handleCopyCode(code)}
-              sx={{ position: 'absolute', top: 0, right: 0, color: 'white' }}
+              sx={{
+                position: 'absolute',
+                top: 4,
+                right: 4,
+                color: theme.palette.text.secondary,
+                bgcolor: theme.palette.background.paper,
+                '&:hover': { bgcolor: theme.palette.grey[100] },
+              }}
             >
-              {copied ? <CheckIcon /> : <FileCopyIcon />}
+              {copied ? <CheckIcon fontSize="small" /> : <FileCopyIcon fontSize="small" />}
             </IconButton>
           </Box>
-        )
+        );
       } else {
-        const bulletRegex = /^[-*\u2022]\s+(.+)$/ // Regex for -, *, and •
-        const numberedRegex = /^\d+\.\s+(.+)$/ // Regex for numbered lists
+        const bulletRegex = /^[-*\u2022]\s+(.+)$/;
+        const numberedRegex = /^\d+\.\s+(.+)$/;
 
         return (
-          <Typography key={`${id}-${index}`} sx={{ fontSize: '20px' }}>
+          <Typography key={`${id}-${index}`} sx={{ fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}>
             {block.split('\n').map((line, idx) => {
-              const bulletMatch = bulletRegex.exec(line)
-              const numberedMatch = numberedRegex.exec(line)
+              const bulletMatch = bulletRegex.exec(line);
+              const numberedMatch = numberedRegex.exec(line);
 
               if (bulletMatch) {
                 return (
                   <span key={`${id}-${index}-${idx}`}>
                     • {bulletMatch[1]}
                     <br />
-                  </span>
-                )
+                </span>
+                );
               } else if (numberedMatch) {
                 return (
                   <span key={`${id}-${index}-${idx}`}>
                     {idx + 1}. {numberedMatch[1]}
                     <br />
-                  </span>
-                )
+                </span>
+                );
               } else {
                 return (
                   <span key={`${id}-${index}-${idx}`}>
                     {line}
                     <br />
-                  </span>
-                )
+                </span>
+                );
               }
             })}
           </Typography>
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
-  return role == 'assistant' ? (
+  return (
     <Box
       sx={{
         display: 'flex',
-        p: 2,
-        bgcolor: 'Background.paper',
-        gap: 2,
+        p: { xs: 1, sm: 1.5 },
+        bgcolor: role === 'user' ? '#e3f2fd' : '#f5f5f5',
         borderRadius: 2,
-        my: 1
+        my: 1,
+        gap: 1,
+        maxWidth: '80%',
+        alignSelf: role === 'user' ? 'flex-end' : 'flex-start',
       }}
     >
-      <Avatar sx={{ ml: '0' }}>
-        <AutoAwesomeOutlinedIcon />
+      <Avatar
+        sx={{
+          width: 32,
+          height: 32,
+          bgcolor: role === 'user' ? theme.palette.primary.main : theme.palette.secondary.main,
+        }}
+      >
+        {role === 'user' && user?.name ? (
+          `${user.name[0]}${user.name.split(' ')[1]?.[0] || ''}`
+        ) : (
+          <AutoAwesomeOutlinedIcon fontSize="small" />
+        )}
       </Avatar>
-      <Box>{renderContent()}</Box>
+      <Box sx={{ flexGrow: 1, wordBreak: 'break-word' }}>{renderContent()}</Box>
     </Box>
-  ) : (
-    <Box
-      sx={{
-        display: 'flex',
-        p: 2,
-        bgcolor: theme.palette.chatInput.main,
-        gap: 2,
-        borderRadius: 2
-      }}
-    >
-      <Avatar sx={{ ml: '0' }}>
-        {auth?.user?.name[0]}
-        {auth?.user?.name.split(' ')[1]
-          ? auth?.user?.name.split(' ')[1][0]
-          : ''}
-      </Avatar>
-      <Box>{renderContent()}</Box>
-    </Box>
-  )
-}
-
-export default ChatItem
+  );
+};

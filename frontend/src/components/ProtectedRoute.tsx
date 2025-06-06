@@ -1,20 +1,11 @@
 import React from 'react'
-import { Navigate, RouteProps } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { Navigate, Outlet } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material'; 
-// import AuthService from '../services/authService'
+import { useAuth } from '../hooks/useAuth';
 
-type ProtectedRouteProps = RouteProps & {
-  requiresAuth: boolean
-  component: React.ComponentType<unknown>
-}
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  requiresAuth,
-  component: Component,
-//   ...rest
-}) => {
-  const { isLoggedIn, user, loading } = useAuth()
+const ProtectedRoute: React.FC = () => {
+  const { isLoggedIn, loading } = useAuth();
 
   if (loading) {
     return (
@@ -31,12 +22,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     ); // Display loading indicator
   }
 
-  if (requiresAuth && !isLoggedIn && !user) {
-    console.log("ProtectedRoute", requiresAuth, isLoggedIn, user)
-    return <Navigate to='/login' replace />
-  }
-
-  return <Component />
+  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
 export default ProtectedRoute
