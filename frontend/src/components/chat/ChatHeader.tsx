@@ -18,8 +18,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onNewChat, onClearChat, 
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        p: { xs: 1, sm: 2 },
-        bgcolor: 'background.paper',
+        p: { xs: 1, sm: 3 },
+        bgcolor: 'background.default',
         borderBottom: '1px solid #ddd',
       }}
     >

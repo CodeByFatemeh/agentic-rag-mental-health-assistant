@@ -26,7 +26,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
         p: { xs: isDrawer ? 2 : 1, sm: isDrawer ? 3 : 2 },
         overflowY: 'auto',
         height: '100%',
-        bgcolor: 'background.paper',
+        bgcolor: 'background.default',
         ...(isDrawer ? {} : {
           width: { xs: '100%', sm: '35vw', md: 'clamp(250px, 25vw, 350px)' },
           maxWidth: '100%',
@@ -95,7 +95,7 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({
           '& .MuiDrawer-paper': {
             width: { xs: '80vw', sm: 'clamp(350px, 40vw, 400px)' },
             maxWidth: '100%',
-            bgcolor: 'background.paper',
+            bgcolor: 'background.default',
           },
         }}
       >

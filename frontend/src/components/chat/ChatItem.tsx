@@ -106,7 +106,7 @@ export const ChatItem: React.FC<ChatItemProps> = ({ message }) => {
                 top: 4,
                 right: 4,
                 color: theme.palette.text.secondary,
-                bgcolor: theme.palette.background.paper,
+                bgcolor: theme.palette.background.default,
                 '&:hover': { bgcolor: theme.palette.grey[100] },
               }}
             >

@@ -8,16 +8,16 @@ import {
 import { red } from '@mui/material/colors'
 
 // Color tokens
-const colorTokens = {
+export const colorTokens = {
   white: '#FFFFFF',
   black: '#000000',
-  darkText: alpha('#000000', 0.9),
+  primaryBlack: alpha('#000000', 0.9),
   lightGreen: '#91a95e',
   darkGreen: '#5c7529',
   lightGray: '#e0dfdf',
   darkGray: '#a9a9a9',
   lightBackground: '#f9f9f7',
-  darkBackground: '#20272f',
+  darkBackground: '#343940',
   darkPaper: '#1a2b6d',
   lightChatInput: '#f0f4f9',
   darkChatInput: '#282828',
@@ -30,14 +30,18 @@ const colorTokens = {
   errorLight: red[300],
   errorDark: red.A400,
   errorDarkMode: '#EF9A9A',
-  errorDarkModeHover: '#E57373'
+  errorDarkModeHover: '#E57373',
+  lightUserMessage: '#c8dbe9',
+  darkUserMessage: '#5694c2',
+  calmBlue: alpha('#5d6bc2', 0.8)
 }
 
 declare module '@mui/material/styles' {
   interface Palette {
     chatInput: { main: string }
+    userMessage: { main: string }
     white: string
-    darkText: string
+    primaryBlack: string
     lightGray: string
     darkGray: string
     lightGreen: string
@@ -45,8 +49,9 @@ declare module '@mui/material/styles' {
   }
   interface PaletteOptions {
     chatInput?: PaletteColorOptions
+    userMessage?: PaletteColorOptions
     white?: string
-    darkText?: string
+    primaryBlack?: string
     lightGray?: string
     darkGray?: string
     lightGreen?: string
@@ -72,18 +77,21 @@ export const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         dark: isLight ? colorTokens.errorDark : colorTokens.errorDarkModeHover
       },
       text: {
-        primary: isLight ? colorTokens.darkText : colorTokens.white,
+        primary: isLight ? colorTokens.primaryBlack : colorTokens.white,
         secondary: isLight ? '#616161' : colorTokens.secondaryDark
       },
       chatInput: {
         main: isLight ? colorTokens.lightChatInput : colorTokens.darkChatInput
+      },
+      userMessage: {
+        main: isLight ? colorTokens.lightUserMessage : colorTokens.darkUserMessage
       },
       background: {
         default: isLight ? colorTokens.lightBackground : colorTokens.darkBackground,
         paper: isLight ? colorTokens.lightBackground : colorTokens.darkPaper
       },
       white: colorTokens.white,
-      darkText: colorTokens.darkText,
+      primaryBlack: colorTokens.primaryBlack,
       lightGray: colorTokens.lightGray,
       darkGray: colorTokens.darkGray,
       lightGreen: colorTokens.lightGreen,
