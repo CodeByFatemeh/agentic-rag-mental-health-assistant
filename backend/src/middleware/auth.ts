@@ -20,12 +20,19 @@ export const verifyToken = async (
 ) => {
   const token = req.signedCookies[`${COOKIE_NAME}`]
 
+  if (!process.env.JWT_SECRET) {
+    console.error('JWT_SECRET is not defined')
+    return res.status(500).json({
+      message: 'Server authentication configuration error'
+    })
+  }
+
   if (!token || token.trim() === '') {
     return res.status(401).json({ message: 'No token provided' })
   }
   jwt.verify(
     token,
-    process.env.JWT_SECRET as jwt.Secret,
+    process.env.JWT_SECRET
     (
       err: VerifyErrors | null,
       decoded: string | jwt.JwtPayload | undefined
