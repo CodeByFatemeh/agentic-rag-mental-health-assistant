@@ -39,24 +39,55 @@ export const getChatSessions = async (
     }
 
     const sessions = await Chat.aggregate([
-      { $match: { user: user._id, isDeleted: false } },
-      {
-        $group: {
-          _id: '$sessionId',
-          createdAt: { $min: '$createdAt' },
-          title: { $first: '$metadata.title' },
+    {
+      $match: {
+        user: user._id,
+        isDeleted: false,
+        sessionId: { $ne: null }
+      }
+    },
+    {
+      $sort: {
+        createdAt: 1
+      }
+    },
+    {
+      $group: {
+        _id: '$sessionId',
+        createdAt: { $first: '$createdAt' },
+        firstMessage: {
+          $first: {
+            $cond: [
+              { $eq: ['$role', 'user'] },
+              '$content',
+              ''
+            ]
+          }
+        }
+      }
+    },
+    {
+      $project: {
+        sessionId: '$_id',
+        createdAt: 1,
+        title: {
+          $cond: [
+            { $ne: ['$firstMessage', ''] },
+            {
+              $substrCP: ['$firstMessage', 0, 50]
+            },
+            'New Chat'
+          ]
         },
-      },
-      { $sort: { createdAt: -1 } },
-      {
-        $project: {
-          sessionId: '$_id',
-          createdAt: 1,
-          title: 1,
-          _id: 0,
-        },
-      },
-    ]);
+        _id: 0
+      }
+    },
+    {
+      $sort: {
+        createdAt: -1
+      }
+    }
+  ])
 
     return res.status(200).json({
       message: OK_MESSAGE,
