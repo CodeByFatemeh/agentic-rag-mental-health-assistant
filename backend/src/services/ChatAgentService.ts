@@ -72,11 +72,21 @@ const prompt = ChatPromptTemplate.fromMessages([
     new MessagesPlaceholder('agent_scratchpad')
   ])
 
-async function handleChatQuery (
+interface ChatQueryResult {
+  content: string
+  sources: {
+    title?: string
+    source?: string
+    category?: string
+    url?: string
+  }[]
+}
+
+async function handleChatQuery(
   userId: string,
   query: string,
   sessionId: string = uuidv4()
-): Promise<string> {
+): Promise<ChatQueryResult> {
   try {
     const userObjectId = new mongoose.Types.ObjectId(userId)
 
@@ -102,6 +112,13 @@ async function handleChatQuery (
       reformulatedQuery,
       2
     )
+    
+    const sources = retrievedDocs.map(doc => ({
+      title: doc.metadata?.title,
+      source: doc.metadata?.source,
+      category: doc.metadata?.category,
+      url: doc.metadata?.url
+    }))
     
     const retrievedContext = retrievedDocs
       .map((doc, index) => {
