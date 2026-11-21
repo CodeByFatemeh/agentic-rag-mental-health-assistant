@@ -153,6 +153,13 @@ export const generateChatCompletion = async (
 
     messages.push({ role: 'user', content: message.trim() })
 
+    await Chat.create({
+      user: user._id,
+      sessionId: sessionId ?? null,
+      role: 'user',
+      content: message.trim()
+    })
+
     const openai = configureOpenAI()
     const chatResponse = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
