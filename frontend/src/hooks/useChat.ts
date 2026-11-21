@@ -120,10 +120,16 @@ export const useChat = (): [ChatState, ChatActions] => {
 
   const handleDeleteChats = async () => {
     try {
-      await deleteUserChats(state.sessionId);
-      localStorage.removeItem('chatSessionId');
-      const newId = uuidv4();
-      setState((prev) => ({ ...prev, messages: [], sessionId: newId, confirmClear: false }));
+      await deleteUserChats(state.sessionId)
+      const newId = uuidv4()
+      localStorage.setItem('chatSessionId', newId)
+      
+      setState((prev) => ({
+        ...prev,
+        messages: [],
+        sessionId: newId,
+        confirmClear: false
+      }))
       toast.success(CHATS_DELETED_SUCCESS);
     } catch (error) {
       console.error('Error deleting chats:', error);
