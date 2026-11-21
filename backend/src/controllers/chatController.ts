@@ -242,7 +242,7 @@ export const sendChatsToUser = async (
 }
 
 export const deleteChats = async (
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction
 ) => {
@@ -259,9 +259,20 @@ export const deleteChats = async (
       return res.status(403).json({ message: PERMISSIONS_DIDNT_MATCH })
     }
 
-    await Chat.deleteMany({ user: user._id })
-    user.chats = []
-    await user.save()
+    const { sessionId } = req.query
+
+    const deleteFilter: {
+      user: typeof user._id
+      sessionId?: string
+    } = {
+      user: user._id
+    }
+    
+    if (typeof sessionId === 'string' && sessionId.trim() !== '') {
+      deleteFilter.sessionId = sessionId
+    }
+    
+    await Chat.deleteMany(deleteFilter)
 
     return res.status(200).json({ message: OK_MESSAGE } as ApiResponse<null>)
   } catch (error) {
