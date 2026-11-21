@@ -26,6 +26,26 @@ const chatSchema: Schema<IChat> = new Schema(
       minlength: 1,
       maxlength: 10000,
     },
+    sources: [
+    {
+      title: {
+        type: String,
+        trim: true
+      },
+      source: {
+        type: String,
+        trim: true
+      },
+      category: {
+        type: String,
+        trim: true
+      },
+      url: {
+        type: String,
+        trim: true
+      }
+    }
+  ],
     metadata: {
       type: Schema.Types.Mixed,
       default: {},
