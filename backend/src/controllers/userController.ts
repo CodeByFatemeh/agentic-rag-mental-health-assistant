@@ -50,7 +50,7 @@ export const userSignup = async (
   try {
     const { name, email, password } = req.body
     if (await User.findOne({ email })) {
-      return res.status(401).json({ message: USER_ALREADY_REGISTERED })
+      return res.status(409).json({ message: USER_ALREADY_REGISTERED })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
