@@ -1,9 +1,12 @@
-import Configuration from "openai";
+import OpenAI from 'openai'
 
 export const configureOpenAI = () => {
-  const config = new Configuration({
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not defined')
+  }
+
+  return new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    organization: process.env.OPENAI_ORGANIZATION_ID,
-  });
-  return config;
-};
+    organization: process.env.OPENAI_ORGANIZATION_ID || undefined
+  })
+}
