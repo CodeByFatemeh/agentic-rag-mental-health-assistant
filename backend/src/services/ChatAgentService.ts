@@ -87,6 +87,23 @@ async function handleChatQuery (
 
     const reformulatedQuery = await reformulateQuery(query)
 
+    const retrievedDocs = await vectorStore.similaritySearch(
+      reformulatedQuery,
+      2
+    )
+    
+    const retrievedContext = retrievedDocs
+      .map((doc, index) => {
+        const title = doc.metadata?.title ?? 'Unknown'
+        const source = doc.metadata?.source ?? 'Unknown'
+    
+        return `Source ${index + 1}
+    Title: ${title}
+    Source: ${source}
+    Content: ${doc.pageContent}`
+      })
+      .join('\n\n')
+
     const tools = [new CrisisHelplineTool()]
     const agent = await createOpenAIFunctionsAgent({
       llm,
@@ -102,9 +119,18 @@ async function handleChatQuery (
 
     const response = await executor.invoke({
       input: reformulatedQuery,
-      context: `Conversation history:\n${context}\nOriginal query: ${query}\nReformulated query: ${reformulatedQuery}`,
-      agent_scratchpad: [],
-      retriever: vectorStore.asRetriever(2)
+      context: `Conversation history:
+    ${context}
+    
+    Retrieved knowledge:
+    ${retrievedContext}
+    
+    Original query:
+    ${query}
+    
+    Reformulated query:
+    ${reformulatedQuery}`,
+      agent_scratchpad: []
     })
 
     // Handle tool output
