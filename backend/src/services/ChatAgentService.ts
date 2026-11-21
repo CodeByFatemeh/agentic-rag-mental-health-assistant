@@ -23,13 +23,13 @@ const index = pinecone.Index('mental-health-index')
 
 const embeddings = new OpenAIEmbeddings({
   apiKey: process.env.OPENAI_API_KEY!,
-  model: 'text-embedding-ada-002'
+  model: process.env.OPENAI_EMBEDDING_MODEL ?? 'text-embedding-ada-002'
 })
 const vectorStore = new PineconeStore(embeddings, { pineconeIndex: index })
 
 const llm = new ChatOpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
-  model: 'gpt-4',
+  model: process.env.OPENAI_CHAT_MODEL ?? 'gpt-4'
   temperature: 0.7
 })
 
