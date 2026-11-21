@@ -41,8 +41,7 @@ class CrisisHelplineTool extends StructuredTool {
   description =
     'Provides crisis helpline numbers for mental health emergencies.'
   async _call (_: z.infer<typeof this.schema>) {
-    return 'National Suicide Prevention Lifeline: 1-800-273-8255 (USA). Online: www.crisischat.org'
-  }
+    return `If you are in immediate danger or at risk of harming yourself or someone else, contact your local emergency services or an official crisis support service in your country.`  }
 }
 
 async function reformulateQuery (query: string): Promise<string> {
@@ -151,14 +150,15 @@ async function handleChatQuery (
       const toolCall = response.tool_calls[0]
       if (toolCall.name === 'crisis_helpline') {
         const toolOutput = await tools[0]._call(toolCall.args)
-        assistantContent = `${toolOutput}\n\nI’m not a professional; please consult one for serious issues.`
+        assistantContent = `${toolOutput}\n\nI'm an AI assistant and not a substitute for a qualified mental health professional.`
       }
     }
 
     // Ensure content is not empty
       assistantContent ??=
-        'I’m here to help, but I need more information to provide a meaningful response. Please share more details or contact a professional for immediate support.\n\nI’m not a professional; please consult one for serious issues.'
-
+        `I’m here to help, but I need a little more information to provide a useful response. Please share more details.
+      
+      I'm an AI assistant and not a substitute for a qualified mental health professional.`
     await Chat.create({
       user: userObjectId,
       sessionId,
