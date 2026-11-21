@@ -193,7 +193,7 @@ export const generateChatCompletion = async (
 
     const openai = configureOpenAI()
     const chatResponse = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: process.env.OPENAI_NON_RAG_MODEL ?? 'gpt-3.5-turbo',
       messages,
       temperature: 0.7
     })
