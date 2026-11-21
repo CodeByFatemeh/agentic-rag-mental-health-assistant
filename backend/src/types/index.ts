@@ -11,6 +11,13 @@ export interface IUser {
   updatedAt?: Date;
 }
 
+export interface ChatSource {
+  title?: string
+  source?: string
+  category?: string
+  url?: string
+}
+
 // Chat interface for chatSchema
 export interface IChat {
   _id?: Types.ObjectId;
@@ -18,6 +25,7 @@ export interface IChat {
   sessionId?: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
+  sources?: ChatSource[]
   metadata?: Record<string, any>;
   isDeleted?: boolean;
   createdAt?: Date;
