@@ -108,6 +108,12 @@ export const generateChatCompletionRAG = async (
 ) => {
   const { message, sessionId } = req.body
 
+  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    return res.status(400).json({
+      message: 'Message is required and must be a non-empty string'
+    })
+  }
+
   try {
     if (
       sessionId &&
