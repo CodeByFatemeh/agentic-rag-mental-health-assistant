@@ -7,7 +7,7 @@ import Chat from './pages/Chat'
 import NotFound from './pages/NotFound'
 import Header from './components/Header'
 import Footer from './components/Footer'
-// import ProtectedRoute from './components/ProtectedRoute'
+import ProtectedRoute from './components/ProtectedRoute'
 
 /**
  * Main application with routing.
@@ -21,9 +21,9 @@ const App: React.FC = () => {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
-          {/* <Route element={<ProtectedRoute />}> */}
-          <Route path='/chat' element={<Chat />} />
-          {/* </Route> */}
+          <Route element={<ProtectedRoute />}>
+            <Route path='/chat' element={<Chat />} />
+          </Route>
           <Route path='*' element={<NotFound />} />
         </Routes>
       </Box>
