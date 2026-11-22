@@ -6,7 +6,6 @@ const userSchema: Schema<IUser> = new Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, index: true },
     password: { type: String, required: true },
-    chats: [{ type: Schema.Types.ObjectId, ref: 'Chat', default: [] }],
   },
   {
     timestamps: true,
