@@ -58,6 +58,10 @@ const prompt = ChatPromptTemplate.fromMessages([
     Use the retrieved knowledge provided below when it is relevant to the user's question.
     Do not invent information that is not supported by the retrieved context.
     
+    Base factual claims on the retrieved knowledge when relevant.
+    Do not claim that a source supports information that is not present in the retrieved context.
+    The application will display the retrieved sources separately, so do not invent source names or URLs in your response.
+    
     If the user indicates an immediate crisis or self-harm risk, use the crisis_helpline tool.
     
     Use the conversation history for context-aware responses.
