@@ -53,6 +53,17 @@ export const useChat = (): [ChatState, ChatActions] => {
     }
   }, [authLoading, isLoggedIn, user]);
 
+  const fetchSessions = async () => {
+    if (!user) return
+  
+    const response = await getChatSessions()
+  
+    setState(prev => ({
+      ...prev,
+      sessions: response.data ?? []
+    }))
+  }
+
   const fetchChats = async (id: string) => {
     if (!user) return;
     try {
@@ -140,7 +151,6 @@ export const useChat = (): [ChatState, ChatActions] => {
   const handleSelectSession = async (id: string) => {
     localStorage.setItem('chatSessionId', id);
     setState((prev) => ({ ...prev, sessionId: id, drawerOpen: false }));
-    await fetchChats(id);
   };
 
   const handleDeleteSession = async (id: string) => {
