@@ -117,12 +117,24 @@ async function handleChatQuery(
       2
     )
     
-    const sources = retrievedDocs.map(doc => ({
-      title: doc.metadata?.title,
-      source: doc.metadata?.source,
-      category: doc.metadata?.category,
-      url: doc.metadata?.url
-    }))
+    const sources = Array.from(
+      new Map(
+        retrievedDocs.map((doc) => {
+          const item = {
+            title: doc.metadata?.title as string | undefined,
+            source: doc.metadata?.source as string | undefined,
+            category: doc.metadata?.category as string | undefined,
+            url: doc.metadata?.url as string | undefined,
+          }
+    
+          const key =
+            item.url ??
+            `${item.title ?? ''}-${item.source ?? ''}`
+    
+          return [key, item]
+        })
+      ).values()
+    )
     
     const retrievedContext = retrievedDocs
       .map((doc, index) => {
