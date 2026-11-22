@@ -21,7 +21,7 @@ interface ChatActions {
   handleSend: () => Promise<void>;
   handleNewChat: () => void;
   handleDeleteChats: () => Promise<void>;
-  handleSelectSession: (id: string) => Promise<void>;
+  handleSelectSession: (id: string) => void;
   handleDeleteSession: (id: string) => Promise<void>;
   toggleDrawer: () => void;
   setConfirmClear: (open: boolean) => void;
@@ -78,26 +78,32 @@ export const useChat = (): [ChatState, ChatActions] => {
     }
   };
 
+  const fetchSessions = async () => {
+  if (!user) return;
+
+  try {
+    const response = await getChatSessions();
+
+    setState((prev) => ({
+      ...prev,
+      sessions: (response as { data: ChatSession[] }).data ?? [],
+    }));
+  } catch (error) {
+    console.error('Error loading sessions:', error);
+  }
+};
+
+useEffect(() => {
+  if (!authLoading && user) {
+    fetchSessions();
+  }
+}, [user, authLoading]);
+
   useEffect(() => {
     if (!authLoading && user) {
       fetchChats(state.sessionId);
     }
   }, [state.sessionId, user, authLoading]);
-
-  useEffect(() => {
-    const fetchSessions = async () => {
-      if (!user) return;
-      try {
-        const response = await getChatSessions();
-        setState((prev) => ({ ...prev, sessions: (response as { data: ChatSession[] }).data }));
-      } catch (error) {
-        console.error('Error loading sessions:', error);
-      }
-    };
-    if (!authLoading && user) {
-      fetchSessions();
-    }
-  }, [user, authLoading]);
 
   const setInput = (value: string) => setState((prev) => ({ ...prev, input: value }));
 
@@ -113,6 +119,7 @@ export const useChat = (): [ChatState, ChatActions] => {
           input: '',
         }));
         toast.success(MESSAGE_SENT_SUCCESS);
+        await fetchSessions();
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -142,15 +149,21 @@ export const useChat = (): [ChatState, ChatActions] => {
         confirmClear: false
       }))
       toast.success(CHATS_DELETED_SUCCESS);
+      await fetchSessions();
     } catch (error) {
       console.error('Error deleting chats:', error);
       toast.error('Failed to delete chats');
     }
   };
 
-  const handleSelectSession = async (id: string) => {
+  const handleSelectSession = (id: string) => {
     localStorage.setItem('chatSessionId', id);
-    setState((prev) => ({ ...prev, sessionId: id, drawerOpen: false }));
+  
+    setState((prev) => ({
+      ...prev,
+      sessionId: id,
+      drawerOpen: false,
+    }));
   };
 
   const handleDeleteSession = async (id: string) => {
@@ -164,6 +177,7 @@ export const useChat = (): [ChatState, ChatActions] => {
         handleNewChat();
       }
       toast.success('Session deleted');
+      await fetchSessions();
     } catch (error) {
       console.error('Error deleting session:', error);
       toast.error('Failed to delete session');
