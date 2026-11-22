@@ -34,7 +34,7 @@ interface ChatItemProps {
 }
 
 export const ChatItem: React.FC<ChatItemProps> = ({ message }) => {
-  const { content, role, _id: id } = message;
+  const { content, role, _id: id, sources } = message
   const [copied, setCopied] = useState(false);
   const messageBlocks = extractCodeFromString(content);
   const { user } = useAuth();
@@ -179,7 +179,59 @@ export const ChatItem: React.FC<ChatItemProps> = ({ message }) => {
           <AutoAwesomeOutlinedIcon fontSize="small" />
         )}
       </Avatar>
-      <Box sx={{ flexGrow: 1, wordBreak: 'break-word' }}>{renderContent()}</Box>
+      <Box sx={{ flexGrow: 1, wordBreak: 'break-word' }}>
+        {renderContent()}
+      
+        {role === 'assistant' && sources && sources.length > 0 && (
+          <Box
+            sx={{
+              mt: 2,
+              pt: 1.5,
+              borderTop: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Typography
+              variant="caption"
+              sx={{
+                display: 'block',
+                mb: 0.5,
+                fontWeight: 600,
+              }}
+            >
+              Sources
+            </Typography>
+      
+            {sources.map((source, index) => (
+              <Typography
+                key={`${source.url ?? source.title ?? 'source'}-${index}`}
+                variant="caption"
+                sx={{
+                  display: 'block',
+                  mb: 0.25,
+                }}
+              >
+                [{index + 1}]{' '}
+      
+                {source.url ? (
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {source.title ?? source.source ?? source.url}
+                  </a>
+                ) : (
+                  source.title ?? source.source ?? 'Retrieved source'
+                )}
+      
+                {source.source &&
+                  source.source !== source.title &&
+                  ` — ${source.source}`}
+              </Typography>
+            ))}
+          </Box>
+  )}
+</Box>
     </Box>
   );
 };
