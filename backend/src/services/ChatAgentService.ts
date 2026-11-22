@@ -186,10 +186,14 @@ async function handleChatQuery(
       user: userObjectId,
       sessionId,
       role: 'assistant',
-      content: assistantContent
+      content: assistantContent,
+      sources
     })
 
-    return assistantContent
+    return {
+      content: assistantContent,
+      sources
+    }
   } catch (error) {
     console.error('Error handling chat query:', error)
     throw error
