@@ -111,17 +111,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const handleLogout = useCallback(async () => {
     try {
-      const response = await logout()
-      if (response.message === 'OK') {
-        setUser(null)
-        localStorage.removeItem('chatSessionId')
-        toast.success('Logout successful!')
-        navigate('/login', { replace: true })
-      }
+      await logout()
+  
+      setUser(null)
+      localStorage.removeItem('chatSessionId')
+      toast.success('Logout successful!')
+      navigate('/login', { replace: true })
     } catch (error) {
       const { message } = handleAxiosError('Logout', error)
       toast.error(message)
-      navigate('/login', { replace: true })
     }
   }, [navigate])
 
