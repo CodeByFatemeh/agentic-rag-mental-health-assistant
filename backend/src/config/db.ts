@@ -3,24 +3,41 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-async function connectToDB () {
+async function connectToDB() {
   try {
-    const user = encodeURIComponent(process.env.MONGODB_USER ?? '')
-    const password = encodeURIComponent(process.env.MONGODB_PASSWORD ?? '')
-    
+    const {
+      MONGODB_USER,
+      MONGODB_PASSWORD,
+      MONGODB_CLUSTER,
+      MONGODB_DATABASE
+    } = process.env
+
+    if (
+      !MONGODB_USER ||
+      !MONGODB_PASSWORD ||
+      !MONGODB_CLUSTER ||
+      !MONGODB_DATABASE
+    ) {
+      throw new Error('MongoDB environment variables are not fully configured')
+    }
+
+    const user = encodeURIComponent(MONGODB_USER)
+    const password = encodeURIComponent(MONGODB_PASSWORD)
+
     const uri =
       `mongodb+srv://${user}:${password}` +
-      `@${process.env.MONGODB_CLUSTER}/${process.env.MONGODB_DATABASE}` +
+      `@${MONGODB_CLUSTER}/${MONGODB_DATABASE}` +
       `?retryWrites=true&w=majority&appName=Cluster0`
-    
+
     await connect(uri)
-    console.log('Connected to MongoDB');
+
+    console.log('Connected to MongoDB')
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Error connecting to database: ${error.message}`);
-    } else {
-      throw new Error('Error connecting to database');
+      throw new Error(`Error connecting to database: ${error.message}`)
     }
+
+    throw new Error('Error connecting to database')
   }
 }
 
