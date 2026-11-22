@@ -32,7 +32,7 @@ export const verifyToken = async (
   }
   jwt.verify(
     token,
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
     (
       err: VerifyErrors | null,
       decoded: string | jwt.JwtPayload | undefined

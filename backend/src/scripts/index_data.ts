@@ -75,11 +75,11 @@ async function indexMentalHealthData () {
           id: item.title,
           values: embedding,
           metadata: {
-            title: resource.title,
-            source: resource.source,
-            category: resource.category,
-            url: resource.url,
-            pageContent: resource.content
+            title: item.title,
+            source: item.source,
+            category: item.category,
+            url: item.url,
+            pageContent: item.content
           }
         }
       ])

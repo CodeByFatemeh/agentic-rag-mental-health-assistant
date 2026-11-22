@@ -29,7 +29,7 @@ const vectorStore = new PineconeStore(embeddings, { pineconeIndex: index })
 
 const llm = new ChatOpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
-  model: process.env.OPENAI_CHAT_MODEL ?? 'gpt-4'
+  model: process.env.OPENAI_CHAT_MODEL ?? 'gpt-4',
   temperature: 0.7
 })
 
