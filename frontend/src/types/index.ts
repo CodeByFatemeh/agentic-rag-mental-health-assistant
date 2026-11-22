@@ -42,13 +42,21 @@ export interface SignupFormValues {
   confirmPassword: string;
 }
 
+export interface ChatSource {
+  title?: string
+  source?: string
+  category?: string
+  url?: string
+}
+
 export interface ChatMessage {
-  _id?: string;
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  user?: string;
-  sessionId?: string;
-  createdAt?: string;
+  _id?: string
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  sources?: ChatSource[]
+  user?: string
+  sessionId?: string
+  createdAt?: string
 }
 
 export interface ChatSession {
