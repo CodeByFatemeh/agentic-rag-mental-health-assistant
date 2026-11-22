@@ -141,8 +141,14 @@ export const generateChatCompletionRAG = async (
 
     return res.status(200).json({
       message: OK_MESSAGE,
-      data: [{ role: 'assistant', content: response } as IChat]
-    } as ApiResponse<IChat[]>)
+      data: [
+        {
+          role: 'assistant',
+          content: response.content,
+          sources: response.sources
+        }
+      ]
+    })
   } catch (error) {
     console.error('Error in generateChatCompletionRAG:', error)
     return res.status(500).json({ message: SOMETHING_WENT_WRONG })
@@ -264,7 +270,7 @@ export const sendChatsToUser = async (
     }
 
     const chats = await Chat.find(query)
-      .select('user role content _id sessionId createdAt')
+      .select('user role content sources _id sessionId createdAt')
       .sort({ createdAt: 1 })
       .lean();
 
