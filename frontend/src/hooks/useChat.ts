@@ -28,7 +28,7 @@ interface ChatActions {
 }
 
 export const useChat = (): [ChatState, ChatActions] => {
-  const { user, isLoggedIn, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState<ChatState>({
     messages: [],
     input: '',
@@ -44,14 +44,6 @@ export const useChat = (): [ChatState, ChatActions] => {
     drawerOpen: false,
     confirmClear: false,
   });
-
-  // Remove redirect logic, rely on AuthProvider
-  useEffect(() => {
-    if (!authLoading && !isLoggedIn && user === null) {
-      // AuthProvider handles navigation
-      return;
-    }
-  }, [authLoading, isLoggedIn, user]);
 
   const fetchSessions = async () => {
     if (!user) return
