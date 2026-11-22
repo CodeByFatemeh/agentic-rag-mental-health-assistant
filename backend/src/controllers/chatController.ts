@@ -250,11 +250,7 @@ export const sendChatsToUser = async (
       return res.status(401).json({ message: UNAUTHORIZED_MESSAGE })
     }
 
-    const user = await User.findById(res.locals.jwtData.userId).populate({
-      path: 'chats',
-      model: 'Chat',
-      select: 'user role content'
-    })
+    const user = await User.findById(res.locals.jwtData.userId)
 
     if (!user) {
       return res.status(401).json({ message: UNAUTHORIZED_MESSAGE })
