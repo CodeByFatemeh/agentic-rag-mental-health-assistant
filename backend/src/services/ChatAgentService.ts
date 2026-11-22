@@ -16,22 +16,42 @@ import { v4 as uuidv4 } from 'uuid'
 // Load environment variables
 dotenv.config()
 
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY!
-})
-const index = pinecone.Index('mental-health-index')
+const getVectorStore = () => {
+  if (!process.env.PINECONE_API_KEY) {
+    throw new Error('PINECONE_API_KEY is not defined')
+  }
 
-const embeddings = new OpenAIEmbeddings({
-  apiKey: process.env.OPENAI_API_KEY!,
-  model: process.env.OPENAI_EMBEDDING_MODEL ?? 'text-embedding-ada-002'
-})
-const vectorStore = new PineconeStore(embeddings, { pineconeIndex: index })
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not defined')
+  }
 
-const llm = new ChatOpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-  model: process.env.OPENAI_CHAT_MODEL ?? 'gpt-4',
-  temperature: 0.7
-})
+  const pinecone = new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY
+  })
+
+  const index = pinecone.Index('mental-health-index')
+
+  const embeddings = new OpenAIEmbeddings({
+    apiKey: process.env.OPENAI_API_KEY,
+    model: process.env.OPENAI_EMBEDDING_MODEL ?? 'text-embedding-ada-002'
+  })
+
+  return new PineconeStore(embeddings, {
+    pineconeIndex: index
+  })
+}
+
+const getLLM = () => {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY is not defined')
+  }
+
+  return new ChatOpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    model: process.env.OPENAI_CHAT_MODEL ?? 'gpt-4',
+    temperature: 0.7
+  })
+}
 
 class CrisisHelplineTool extends StructuredTool {
   schema = z.object({
@@ -45,6 +65,7 @@ class CrisisHelplineTool extends StructuredTool {
 }
 
 async function reformulateQuery (query: string): Promise<string> {
+  const llm = getLLM()
   const reformulationPrompt = `Given the user query "${query}", reformulate it to better match mental health content for retrieval (e.g., "I feel stressed" → "stress management techniques"). Return only the reformulated query.`
   const response = await llm.invoke(reformulationPrompt)
   return response.content as string
@@ -94,6 +115,9 @@ async function handleChatQuery(
   try {
     const userObjectId = new mongoose.Types.ObjectId(userId)
 
+    const vectorStore = getVectorStore()
+    const llm = getLLM()
+    
     const history = await Chat.find({
       user: userObjectId,
       sessionId,
